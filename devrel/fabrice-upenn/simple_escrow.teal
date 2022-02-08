@@ -1,0 +1,39 @@
+#pragma version 5
+txn ApplicationID
+int 0
+==
+bnz main_l6
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l5
+txn OnCompletion
+int NoOp
+==
+bnz main_l4
+err
+main_l4:
+txna ApplicationArgs 0
+byte "payme"
+==
+assert
+itxn_begin
+int pay
+itxn_field TypeEnum
+int 2100000
+itxn_field Amount
+txn Sender
+itxn_field Receiver
+itxn_submit
+byte "sent 0.21 Algos"
+log
+int 1
+return
+main_l5:
+txn Sender
+global CreatorAddress
+==
+return
+main_l6:
+int 1
+return

@@ -1,0 +1,14 @@
+{
+  "name" : "fabrice-upenn",
+  "version" : "1.0",
+  "stateful_contracts" : [ {
+    "name" : "state",
+    "approval_program" : "state.teal",
+    "clear_state_program" : "clear.teal",
+    "global-byteslices" : 0,
+    "global-ints" : 1,
+    "local-byteslices" : 0,
+    "local-ints" : 0,
+    "extra-pages" : 0
+  } ]
+}
