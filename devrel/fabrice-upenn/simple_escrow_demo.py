@@ -49,8 +49,8 @@ def demo():
     print()
 
     # Print balances
-    print_balance("Bob", accounts[1].address)
     print_balance("Application Account", app_address)
+    print_balance("Bob", accounts[1].address)
 
     print()
 
@@ -72,8 +72,8 @@ def demo():
     print()
 
     # Print balances
-    print_balance("Bob", accounts[1].address)
     print_balance("Application Account", app_address)
+    print_balance("Bob", accounts[1].address)
 
     print()
 
