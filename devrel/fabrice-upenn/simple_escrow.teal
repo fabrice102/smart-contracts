@@ -2,21 +2,29 @@
 txn ApplicationID
 int 0
 ==
-bnz main_l6
+bnz main_l12
 txn OnCompletion
 int DeleteApplication
 ==
-bnz main_l5
+bnz main_l11
 txn OnCompletion
-int NoOp
+int UpdateApplication
 ==
-bnz main_l4
-err
-main_l4:
+bnz main_l10
+txn OnCompletion
+int OptIn
+==
+bnz main_l9
+txn OnCompletion
+int CloseOut
+==
+bnz main_l8
 txna ApplicationArgs 0
 byte "payme"
 ==
-assert
+bnz main_l7
+err
+main_l7:
 itxn_begin
 int pay
 itxn_field TypeEnum
@@ -25,15 +33,26 @@ itxn_field Amount
 txn Sender
 itxn_field Receiver
 itxn_submit
-byte "sent 0.21 Algos"
+byte "sent 2.1 Algos"
 log
 int 1
 return
-main_l5:
+main_l8:
+int 0
+return
+main_l9:
+int 0
+return
+main_l10:
 txn Sender
 global CreatorAddress
 ==
 return
-main_l6:
+main_l11:
+txn Sender
+global CreatorAddress
+==
+return
+main_l12:
 int 1
 return

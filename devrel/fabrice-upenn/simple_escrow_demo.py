@@ -30,7 +30,7 @@ def demo():
     print(f"Creating simple escrow app using Alice's account...")
     app_id = create_app(accounts[0].address, accounts[0].private_key)
     app_address = get_application_address(app_id)
-    print(f"  App created with id:          : {app_id}")
+    print(f"  App created with id:            {app_id}")
     print(f"  Associated application account: {app_address}")
     print()
 
@@ -42,7 +42,12 @@ def demo():
 
     # Fund the application account
     print(f"Funding the application account from Alice's account")
-    unsigned_txn = PaymentTxn(accounts[0].address, sp, app_address, 10000000, None, None)
+    unsigned_txn = PaymentTxn(
+        sender=accounts[0].address,  # Alice's address
+        sp=sp,
+        receiver=app_address,
+        amt=10000000  # 10 Algos
+    )
     signed_txn = unsigned_txn.sign(accounts[0].private_key)
     send_txn(signed_txn)
 
@@ -80,7 +85,7 @@ def demo():
     # Delete application
     print(f"Delete application...")
     unsigned_txn = ApplicationDeleteTxn(
-        sender=accounts[0].address,  # Bob's address
+        sender=accounts[0].address,  # Alice's address
         sp=sp,
         index=app_id
     )
@@ -95,11 +100,11 @@ def print_balance(name: str, address: str) -> None:
     :param address: address of the account
     """
     acct_info = client.account_info(address)
-    algos = acct_info["amount"] / 10000000
+    algos = acct_info["amount"] / 1000000
     print(f"Balance of {name:20s}: {algos:.3f} Algos")
 
 
-def create_app(address: str, private_key: bytes) -> int:
+def create_app(address: str, private_key: str) -> int:
     """
     Create an application and returns its ID
     :param address: address of the creator
@@ -141,7 +146,7 @@ def create_app(address: str, private_key: bytes) -> int:
     return result['application-index']
 
 
-def send_txn(signed_txn:SignedTransaction, with_logs=False):
+def send_txn(signed_txn: SignedTransaction, with_logs=False):
     """
     Send a signed transaction to the blockchain
     and displays when sent and when confirmed
@@ -163,11 +168,11 @@ def send_txn(signed_txn:SignedTransaction, with_logs=False):
     return result
 
 
-def write_dryrun(signed_txn: SignedTransaction, app_id: int, addrs: List[str]) -> None:
+def write_dryrun(signed_txns: List[SignedTransaction], app_id: int, addrs: List[str]) -> None:
     """
     Make a dryrun of the transaction signed_txn
     Assumes the source of the approval file is simple_escrow.teal
-    :param signed_txn: transaction to dryrun
+    :param signed_txns: group of transactions to dryrun
     :param app_id: application ID associated
     :param addrs: account addresses used
     """
@@ -193,7 +198,7 @@ def write_dryrun(signed_txn: SignedTransaction, app_id: int, addrs: List[str]) -
 
     # Create request
     drr = DryrunRequest(
-        txns=signed_txn,
+        txns=signed_txns,
         sources=sources,
         apps=[app],
         accounts=accounts

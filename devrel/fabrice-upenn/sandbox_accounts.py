@@ -8,7 +8,7 @@ KMD_WALLET_PASSWORD = ""
 
 
 class Account:
-    def __init__(self, private_key, address):
+    def __init__(self, private_key: str, address: str):
         self.private_key = private_key
         self.address = address
 
